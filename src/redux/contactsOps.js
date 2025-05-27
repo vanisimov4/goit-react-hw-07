@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-// import { fetchInProgress, fetchSuccess, fetchError } from './contactsSlice';
 
 // Встановлюємо базову URL-адресу
 // для всіх запитів axios
@@ -20,18 +19,17 @@ export const fetchContacts = createAsyncThunk(
         // який буде відхилений з текстом помилки
         return thunkAPI.rejectWithValue(e.message);
       }
-      // const response = await axios.get('/contacts');
-      // return response.data;
-      // try {
-      //   // Індикатор завантаження
-      //   dispatch(fetchInProgress());
-      //   // HTTP-запит
-      //   const response = await axios.get('/contacts');
-      //   // Обробка даних
-      //   dispatch(fetchSuccess(response.data));
-      // } catch (e) {
-      //   // Обробка помилки
-      //   dispatch(fetchError(e.message));
-      // }
     }
+);
+
+export const addContact = createAsyncThunk(
+  'contacts/addContact',
+  async ({ nextRecord }, thunkAPI) => {
+    try {
+      const response = await axios.post('/contacts', { nextRecord });
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
 );
