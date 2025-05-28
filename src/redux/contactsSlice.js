@@ -1,5 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts } from './contactsOps';
+import { fetchContacts, addContact, deleteContact } from './contactsOps';
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const slice = createSlice({
   // Ім'я слайсу
@@ -13,32 +22,34 @@ const slice = createSlice({
   // Додаємо обробку зовнішніх екшенів
   extraReducers: builder => {
     builder
-      .addCase(fetchContacts.pending, (state, action) => {
-        state.isLoading = true;
-      })
+      .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.items = action.payload;
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
+      .addCase(fetchContacts.rejected, handleRejected)
+      .addCase(addContact.pending, handlePending)
+      .addCase(addContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
-      });
-  },
-  // Об'єкт case-редюсерів
-  reducers: {
-    addContact: (state, action) => {
-      state.items.push(action.payload);
-    },
-    deleteContact: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
-    },
+        state.error = null;
+        state.items.push(action.payload);
+      })
+      .addCase(addContact.rejected, handleRejected)
+      .addCase(deleteContact.pending, handlePending)
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = state.items.filter(
+          contacts => contacts.id !== action.payload.id
+        );
+      })
+      .addCase(deleteContact.rejected, handleRejected);
   },
 });
 
 // Експортуємо фабрики екшенів
-export const { addContact, deleteContact } = slice.actions;
+// export const { deleteContact } = slice.actions;
 
 // Експортуємо редюсер слайсу
 export default slice.reducer;

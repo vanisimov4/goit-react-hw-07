@@ -7,7 +7,6 @@ import { addContact } from '../../redux/contactsOps';
 import css from './ContactForm.module.css';
 
 const initialValues = {
-  // id: '',
   name: '',
   number: '',
 };
@@ -32,8 +31,7 @@ const ContactForm = () => {
   const numberFieldId = useId();
 
   const handleSubmit = (values, actions) => {
-    const { nextRecord } = {
-      // id: nanoid(),
+    const nextRecord = {
       name: values.name.trim(),
       number: values.number.trim(),
     };
