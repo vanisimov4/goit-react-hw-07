@@ -1,15 +1,22 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts } from '../../redux/contactsOps';
-import ContactForm from '../contactForm/ContactForm';
-import SearchBox from '../searchBox/SearchBox';
-import ContactList from '../contactList/ContactList';
-import './App.css';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchContacts } from "../../redux/contactsOps";
+import ContactForm from "../contactForm/ContactForm";
+import SearchBox from "../searchBox/SearchBox";
+import ContactList from "../contactList/ContactList";
+import {
+  selectContacts,
+  selectLoading,
+  selectError,
+} from "../../redux/contactsSlice";
+import "./App.css";
 
 function App() {
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
-  // Отримуємо частини стану
-  const { items, isLoading, error } = useSelector(state => state.contacts);
+
   // Викликаємо операцію
   useEffect(() => {
     dispatch(fetchContacts());
@@ -19,9 +26,9 @@ function App() {
       <h1>Phonebook</h1>
       <ContactForm />
       <SearchBox />
-      {isLoading && <p>Loading contacts...</p>}
+      {loading && <p>Loading contacts...</p>}
       {error && <p>{error}</p>}
-      {items.length && <ContactList />}
+      {contacts.length && <ContactList />}
     </div>
   );
 }

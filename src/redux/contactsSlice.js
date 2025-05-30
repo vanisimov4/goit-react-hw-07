@@ -1,18 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, addContact, deleteContact } from './contactsOps';
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchContacts, addContact, deleteContact } from "./contactsOps";
 
-const handlePending = state => {
-  state.isLoading = true;
+const handlePending = (state) => {
+  state.loading = true;
 };
 
 const handleRejected = (state, action) => {
-  state.isLoading = false;
+  state.loading = false;
   state.error = action.payload;
 };
 
 const slice = createSlice({
   // Ім'я слайсу
-  name: 'contacts',
+  name: "contacts",
   // Початковий стан редюсера слайсу
   initialState: {
     items: [],
@@ -20,36 +20,39 @@ const slice = createSlice({
     error: null,
   },
   // Додаємо обробку зовнішніх екшенів
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
       .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loading = false;
         state.error = null;
         state.items = action.payload;
       })
       .addCase(fetchContacts.rejected, handleRejected)
       .addCase(addContact.pending, handlePending)
       .addCase(addContact.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loading = false;
         state.error = null;
         state.items.push(action.payload);
       })
       .addCase(addContact.rejected, handleRejected)
       .addCase(deleteContact.pending, handlePending)
       .addCase(deleteContact.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loading = false;
         state.error = null;
         state.items = state.items.filter(
-          contacts => contacts.id !== action.payload.id
+          (contacts) => contacts.id !== action.payload.id
         );
       })
       .addCase(deleteContact.rejected, handleRejected);
   },
 });
 
-// Експортуємо фабрики екшенів
-// export const { deleteContact } = slice.actions;
-
 // Експортуємо редюсер слайсу
 export default slice.reducer;
+
+export const selectContacts = (state) => state.contacts.items;
+
+export const selectLoading = (state) => state.contacts.loading;
+
+export const selectError = (state) => state.contacts.error;
