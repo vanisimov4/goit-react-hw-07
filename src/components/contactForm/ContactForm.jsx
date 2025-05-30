@@ -1,27 +1,26 @@
-import { useDispatch } from "react-redux";
-import { useId } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-// import { nanoid } from 'nanoid';
-import { addContact } from "../../redux/contactsOps";
-import css from "./ContactForm.module.css";
+import { useDispatch } from 'react-redux';
+import { useId } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { addContact } from '../../redux/contactsOps';
+import css from './ContactForm.module.css';
 
 const initialValues = {
-  name: "",
-  number: "",
+  name: '',
+  number: '',
 };
 
 const PhonebookSchema = Yup.object().shape({
   name: Yup.string()
     .trim()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
   number: Yup.string()
     .trim()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
 });
 
 const ContactForm = () => {
@@ -46,7 +45,7 @@ const ContactForm = () => {
       onSubmit={handleSubmit}
       validationSchema={PhonebookSchema}
     >
-      {(props) => {
+      {props => {
         // console.log(props.errors);
         return (
           <Form className={css.form}>

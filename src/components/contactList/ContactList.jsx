@@ -1,23 +1,15 @@
-import { useSelector } from "react-redux";
-import Contact from "../contact/Contact";
-import { selectContacts } from "../../redux/contactsSlice";
-import { selectNameFilter } from "../../redux/filtersSlice";
-import css from "./ContactList.module.css";
-
-function getFilteredContacts(contList, searchValue) {
-  return contList.filter((contact) =>
-    contact.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-  );
-}
+import { useSelector } from 'react-redux';
+import Contact from '../contact/Contact';
+import { selectFilteredContacts } from '../../redux/contactsSlice';
+import css from './ContactList.module.css';
 
 const ContactList = () => {
-  const contList = useSelector(selectContacts);
-  const searchValue = useSelector(selectNameFilter);
-  const visibleContacts = getFilteredContacts(contList, searchValue);
+  const visibleContacts = useSelector(selectFilteredContacts);
+
   return (
     <ul className={css.contactList}>
       {/* Кількість li залежить від кількості об'єктів в масиві */}
-      {visibleContacts.map((contact) => {
+      {visibleContacts.map(contact => {
         return (
           <li key={contact.id}>
             <Contact

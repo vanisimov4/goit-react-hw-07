@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchContacts, addContact, deleteContact } from "./contactsOps";
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, deleteContact } from './contactsOps';
+import { selectNameFilter } from './filtersSlice';
 
-const handlePending = (state) => {
+const handlePending = state => {
   state.loading = true;
 };
 
@@ -12,7 +13,7 @@ const handleRejected = (state, action) => {
 
 const slice = createSlice({
   // Ім'я слайсу
-  name: "contacts",
+  name: 'contacts',
   // Початковий стан редюсера слайсу
   initialState: {
     items: [],
@@ -20,7 +21,7 @@ const slice = createSlice({
     error: null,
   },
   // Додаємо обробку зовнішніх екшенів
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
@@ -41,7 +42,7 @@ const slice = createSlice({
         state.loading = false;
         state.error = null;
         state.items = state.items.filter(
-          (contacts) => contacts.id !== action.payload.id
+          contacts => contacts.id !== action.payload.id
         );
       })
       .addCase(deleteContact.rejected, handleRejected);
@@ -51,8 +52,19 @@ const slice = createSlice({
 // Експортуємо редюсер слайсу
 export default slice.reducer;
 
-export const selectContacts = (state) => state.contacts.items;
+export const selectContacts = state => state.contacts.items;
 
-export const selectLoading = (state) => state.contacts.loading;
+export const selectLoading = state => state.contacts.loading;
 
-export const selectError = (state) => state.contacts.error;
+export const selectError = state => state.contacts.error;
+
+//  Оголошуємо селектор
+export const selectFilteredContacts = createSelector(
+  [selectContacts, selectNameFilter],
+  (contList, searchValue) => {
+    //  Повертаємо результат обчислень
+    return contList.filter(contact =>
+      contact.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+    );
+  }
+);
